@@ -1,0 +1,67 @@
+name: Deploy PWA to GitHub Pages
+
+# Publishes the app to GitHub Pages so it can be installed to a phone's home
+# screen. `configure-pages` with enablement turns Pages on for the repository
+# the first time this runs, so no manual setup is needed.
+#
+# Note: GitHub Pages on a *private* repository requires a paid plan. On a free
+# account this job fails at the "Configure Pages" step — make the repository
+# public (or upgrade) and re-run.
+
+on:
+  push:
+    branches: [claude/fitness-skin-pwa-89u8dz]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Self-host the MediaPipe runtime and pose model
+        # Ships the app with no third-party requests at all, so it works
+        # offline from the very first launch.
+        run: node scripts/fetch-vendor.mjs
+
+      - name: Verify the pose maths
+        run: npm test
+
+      - name: Stage the static site
+        run: |
+          mkdir -p _site
+          cp -r index.html manifest.webmanifest sw.js .nojekyll \
+                styles js icons vendor README.md _site/
+          du -sh _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
