@@ -1,16 +1,23 @@
 name: Deploy PWA to GitHub Pages
 
 # Publishes the app to GitHub Pages so it can be installed to a phone's home
-# screen. `configure-pages` with enablement turns Pages on for the repository
-# the first time this runs, so no manual setup is needed.
+# screen, and self-hosts the pose model so the published app makes no
+# third-party requests.
 #
-# Note: GitHub Pages on a *private* repository requires a paid plan. On a free
-# account this job fails at the "Configure Pages" step — make the repository
-# public (or upgrade) and re-run.
+# Before this can run, Pages must be available and enabled:
+#   1. The repository must be public, or on a plan that includes Pages for
+#      private repositories.
+#   2. Settings → Pages → Source → GitHub Actions.
+#
+# `configure-pages` can normally switch Pages on by itself, but only when the
+# workflow token carries the `pages: write` scope. A token without it fails
+# with "Create Pages site failed — Resource not accessible by integration",
+# which is why step 2 above may need doing by hand once.
+#
+# Manual trigger only, so the run does not fail repeatedly on every push
+# before Pages has been set up. Run it from the Actions tab.
 
 on:
-  push:
-    branches: [claude/fitness-skin-pwa-89u8dz]
   workflow_dispatch:
 
 permissions:
