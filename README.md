@@ -88,11 +88,31 @@ npm run vendor:full     # also fetch the higher-accuracy model
 The app detects `./vendor/vendor.json` at runtime and prefers local assets
 automatically. `vendor/` is git-ignored — run this at deploy time.
 
+### Getting it onto a phone
+
+Phones need HTTPS for camera access, so pick one:
+
+**GitHub Pages** (easiest, permanent)
+Repo → *Settings* → *Pages* → Source *Deploy from a branch* → pick this branch,
+folder `/ (root)` → *Save*. A minute later the app is live at
+`https://<user>.github.io/<repo>/` — open it on the phone and *Add to Home
+Screen*. (Pages on a private repo needs a paid plan.)
+
+**A tunnel** (good for a quick trial from your laptop)
+
+```bash
+npm start                                   # terminal 1
+npx --yes cloudflared tunnel --url http://localhost:8080   # terminal 2
+```
+
+Open the printed `https://….trycloudflare.com` URL on the phone.
+
 ### Deploying
 
 Copy the repository contents to any static host (GitHub Pages, Netlify, S3,
 nginx). Everything uses relative paths and hash-based routing, so it works from
-a subdirectory without server rewrites.
+a subdirectory without server rewrites — `npm run e2e:subpath` verifies exactly
+that case in a browser.
 
 ---
 
@@ -101,6 +121,7 @@ a subdirectory without server rewrites.
 ```bash
 npm test              # pose maths + rep engine (node:test, no browser)
 node test/e2e.mjs     # full browser run: fake camera, real MediaPipe, PWA checks
+npm run e2e:subpath   # same app served from a subdirectory (GitHub Pages case)
 ```
 
 `npm test` synthesises poses with forward kinematics, so joint angles have an
