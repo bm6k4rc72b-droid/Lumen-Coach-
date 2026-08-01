@@ -1,0 +1,22 @@
+{
+  "name": "lumen-coach",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-first PWA for personal trainers: real-time exercise form analysis and skin wellness scanning, entirely on-device.",
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes http-server . -p 8080 -c-1 --cors",
+    "serve": "npx --yes http-server . -p 8080 -c-1 --cors",
+    "icons": "node scripts/make-icons.mjs",
+    "vendor": "node scripts/fetch-vendor.mjs",
+    "vendor:full": "node scripts/fetch-vendor.mjs --full",
+    "test": "node --test 'test/*.test.mjs'",
+    "e2e": "node test/e2e.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f2a9bd"/>
+      <stop offset="100%" stop-color="#b473c6"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="26%" cy="14%" r="86%">
+      <stop offset="0%" stop-color="#f2a9bd" stop-opacity=".34"/>
+      <stop offset="60%" stop-color="#b473c6" stop-opacity=".12"/>
+      <stop offset="100%" stop-color="#0b0d10" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="512" height="512" rx="112.64" fill="#0b0d10"/>
+  <rect x="0" y="0" width="512" height="512" rx="112.64" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="174.08" fill="none" stroke="#1e232b" stroke-width="38.4"/>
+  <path d="M113.40201213017227 355.8481860399901 A 174.08 174.08 0 1 1 398.5979878698277 355.8481860399901"
+        fill="none" stroke="url(#brand)" stroke-width="38.4" stroke-linecap="round"/>
+  
+      <g stroke="#fff" stroke-width="26.624" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <circle cx="256" cy="152.16639999999998" r="24.49408" fill="#fff" stroke="none"/>
+        <path d="M256 189.44 L256 252.928"/>
+        <path d="M197.12 200.70399999999998 L256 212.992 L314.88 183.808"/>
+        <path d="M256 252.928 L201.8304 302.08 L219.49439999999998 348.15999999999997"/>
+        <path d="M256 252.928 L310.1696 308.224 L316.0576 360.448"/>
+      </g>
+</svg>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<title>Lumen Coach — Form & Skin Wellness</title>
+<meta name="description" content="Real-time exercise form analysis and skin wellness scanning for personal trainers and their clients.">
+
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0B0D10">
+<meta name="color-scheme" content="dark">
+
+<!-- iOS home-screen app -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lumen">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/icon-192.png" sizes="192x192">
+<link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+
+<link rel="stylesheet" href="./styles/app.css">
+</head>
+<body>
+
+<div id="app">
+  <header id="appbar" class="appbar">
+    <button id="backBtn" class="icon-btn" aria-label="Go back" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="appbar-titles">
+      <h1 id="appTitle">Lumen</h1>
+      <p id="appSubtitle" class="appbar-sub"></p>
+    </div>
+    <div id="appbarActions" class="appbar-actions"></div>
+  </header>
+
+  <main id="view" class="view" tabindex="-1"></main>
+
+  <nav id="tabbar" class="tabbar" aria-label="Main">
+    <a class="tab" href="#/" data-tab="/">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>Home</span>
+    </a>
+    <a class="tab" href="#/clients" data-tab="/clients">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c.6-3.2 3-5 5.5-5s4.9 1.8 5.5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 7.2a2.8 2.8 0 0 1 0 5.6M17.5 19c-.2-1.6-.7-2.9-1.5-3.9 2.3-.3 4.3 1.3 4.8 3.9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Clients</span>
+    </a>
+    <a class="tab tab-primary" href="#/train" data-tab="/train">
+      <span class="tab-fab">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9v6M17.5 9v6M3.5 10.5v3M20.5 10.5v3M6.5 12h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span>Train</span>
+    </a>
+    <a class="tab" href="#/skin" data-tab="/skin">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c3.6 2.6 6 5.3 6 8.7a6 6 0 0 1-12 0c0-3.4 2.4-6.1 6-8.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9.6 13.4a2.6 2.6 0 0 0 3.2 2.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span>Skin</span>
+    </a>
+    <a class="tab" href="#/history" data-tab="/history">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7.4V12l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>History</span>
+    </a>
+  </nav>
+</div>
+
+<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+<div id="sheetRoot"></div>
+
+<noscript>
+  <p style="padding:24px;color:#fff;font:16px system-ui">Lumen Coach needs JavaScript enabled.</p>
+</noscript>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
