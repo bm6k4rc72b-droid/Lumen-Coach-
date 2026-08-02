@@ -63,6 +63,7 @@ export class PoseEngine {
     this.busy = false;
     this.frameTimes = [];
     this.assets = null;
+    this.segmentation = false;
   }
 
   get ready() { return !!this.landmarker; }
@@ -110,6 +111,7 @@ export class PoseEngine {
     }
 
     this.quality = wanted;
+    this.segmentation = false;
     this.lastTimestamp = -1;
     return this;
   }
@@ -140,6 +142,51 @@ export class PoseEngine {
     }
     const landmarks = result?.landmarks?.[0];
     return landmarks && landmarks.length ? landmarks : null;
+  }
+
+  /**
+   * Toggles the person segmentation mask on or off.
+   * Only the body scan needs it; leaving it off keeps the live loop cheap.
+   */
+  async setSegmentation(enabled) {
+    if (!this.landmarker || this.segmentation === enabled) return;
+    await this.landmarker.setOptions({ outputSegmentationMasks: !!enabled });
+    this.segmentation = !!enabled;
+  }
+
+  /**
+   * One-shot detection that also copies out the segmentation mask.
+   * The mask's backing memory is only valid until the next call, so the
+   * pixel data is copied before returning.
+   */
+  detectWithMask(video, timestampMs) {
+    if (!this.landmarker) return null;
+    const ts = Math.max(Math.round(timestampMs), this.lastTimestamp + 1);
+    this.lastTimestamp = ts;
+    let result;
+    try {
+      result = this.landmarker.detectForVideo(video, ts);
+    } catch (err) {
+      console.warn('Segmented detection failed', err);
+      return null;
+    }
+    const landmarks = result?.landmarks?.[0] || null;
+    const mpMask = result?.segmentationMasks?.[0] || null;
+    if (!mpMask) return { landmarks, mask: null, maskW: 0, maskH: 0 };
+
+    const maskW = mpMask.width;
+    const maskH = mpMask.height;
+    let mask = null;
+    try {
+      mask = Float32Array.from(mpMask.getAsFloat32Array());
+    } catch {
+      try {
+        const bytes = mpMask.getAsUint8Array();
+        mask = Float32Array.from(bytes, (v) => v / 255);
+      } catch { mask = null; }
+    }
+    try { mpMask.close?.(); } catch { /* already released */ }
+    return { landmarks, mask, maskW, maskH };
   }
 
   /** Average inference cost in ms — used to adapt the frame budget. */

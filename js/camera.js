@@ -31,7 +31,7 @@ export function describeCameraError(err) {
       return {
         title: 'Camera access is blocked',
         body: isIOS
-          ? 'Tap "AA" or the ⓘ in the address bar → Website Settings → Camera → Allow, then reload. In the installed app, check Settings → Lumen → Camera.'
+          ? 'Tap "AA" or the ⓘ in the address bar → Website Settings → Camera → Allow, then reload. In the installed app, check Settings → Krysaril → Camera.'
           : 'Tap the lock icon in the address bar → Permissions → Camera → Allow, then reload this page.',
       };
     case 'NotFoundError':

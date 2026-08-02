@@ -368,7 +368,7 @@ export function analyzeSkin(source, { region = 'face' } = {}) {
       toneSpread: round(toneSpread),
     },
     analyzedAt: Date.now(),
-    engine: 'lumen-skin-1',
+    engine: 'krysaril-skin-1',
   };
 }
 

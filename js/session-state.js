@@ -7,7 +7,7 @@
 
 import { saveSession, uid } from './store.js';
 
-const KEY = 'lumen.activeSession';
+const KEY = 'krysaril.activeSession';
 
 let active = null;
 

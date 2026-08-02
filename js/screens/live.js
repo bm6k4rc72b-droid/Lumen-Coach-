@@ -290,7 +290,7 @@ export async function render({ query }) {
     analyzer.setExercise(exercise.id);
     setStartedAt = Date.now();
     exerciseChip.textContent = `${exercise.emoji} ${exercise.name}`;
-    localStorage.setItem('lumen.lastExercise', exercise.id);
+    localStorage.setItem('krysaril.lastExercise', exercise.id);
     toast(`${exercise.name} — ${exercise.setup}`, '', 3400);
   };
 

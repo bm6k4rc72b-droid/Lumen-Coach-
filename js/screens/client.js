@@ -87,7 +87,7 @@ export async function render({ params }) {
   /* --------------------------------------------------------- skin trend */
   if (scans.length) {
     const strip = el('div.thumb-strip', null, ...scans.slice(0, 12).map((s) => el('button.thumb', {
-      onclick: () => navigate(`/scan/${s.id}`),
+      onclick: () => navigate(`/skinscan/${s.id}`),
     },
       s.thumb ? el('img', { src: s.thumb, alt: '' }) : el('div', { style: { height: '92px', display: 'grid', placeItems: 'center', fontSize: '22px' } }, '✨'),
       el('div.cap', { style: { color: `var(--${scoreClass(s.overall)})`, fontWeight: '700' } }, s.overall ?? '—'),
@@ -104,7 +104,7 @@ export async function render({ params }) {
           el('div', { style: { fontWeight: '650' } }, 'Latest scan'),
           el('div.tiny.muted', { style: { marginTop: '2px' } }, fmtDate(lastScan.createdAt)),
         ),
-        el('button.btn.btn-sm', { onclick: () => navigate(`/scan/${lastScan.id}`) }, 'Open'),
+        el('button.btn.btn-sm', { onclick: () => navigate(`/skinscan/${lastScan.id}`) }, 'Open'),
       ) : null,
       strip,
     ));

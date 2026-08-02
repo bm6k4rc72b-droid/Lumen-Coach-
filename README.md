@@ -1,139 +1,139 @@
-# Lumen Coach
+# Krysaril
 
-A mobile-first Progressive Web App for personal trainers and their clients:
-**real-time exercise form analysis** from the phone camera, and an on-device
-**skin wellness scan**. Everything runs locally — no accounts, no uploads, no
-backend.
+*krysis* — Greek **κρίσις**, judgement: the act of discerning, of telling one
+thing from another.
 
-Built for iPhone (Safari) and Android (Chrome), installable to the home screen
-and usable like a native app.
+A mobile-first Progressive Web App that measures the body five ways from a
+phone camera — **movement form**, **postural alignment**, **body composition
+change**, **strike speed and output**, and **skin wellness**. Everything runs
+on-device. No accounts, no uploads, no backend.
+
+Built for iPhone (Safari) and Android (Chrome), installable to the home screen.
 
 ---
 
-## What it does
+## What it measures
 
-### 1. Live movement analysis
+### 1. Movement — live form analysis
 
-- On-device pose estimation (MediaPipe Pose Landmarker, 33 landmarks) with a
-  live skeleton overlay drawn exactly on the person.
-- Real-time joint angles: **knees, hips, ankles, shoulders, elbows and torso
-  lean**, plus shin angle, spinal alignment and knee tracking.
-- Eight movements with their own rules and coaching language:
-  squat · deadlift · push-up · lunge · overhead press · bent-over row ·
-  glute bridge · **side-view running form**.
-- Automatic rep counting, per-rep form scoring, and colour-coded feedback —
-  **green** keep going, **amber** adjust, **red** stop and reset.
-- Cadence and approximate speed for running and treadmill work.
-- Trainers start a session, pick an exercise, save sets with rep counts, form
-  scores, joint-angle ranges and notes, all against a client profile.
+On-device pose estimation with a live skeleton overlay, real-time joint angles
+(knees, hips, ankles, shoulders, elbows, torso lean), automatic rep counting and
+per-rep form scoring across eight movements: squat · deadlift · push-up · lunge ·
+overhead press · bent-over row · glute bridge · running gait. Colour-coded
+coaching: **green** keep going, **amber** adjust, **red** reset.
 
-### 2. Skin wellness scan
+### 2. Posture — physical-therapy style assessment
 
-Capture the face (or a specific area) and get an encouraging, non-clinical
-snapshot of:
+A single still, measured against a plumb line dropped from the ankle and marked
+up like a therapist's chart.
 
-| Metric | What it looks at |
+| Side view | Front view |
 | --- | --- |
-| Tone evenness | Consistency of tone across the scanned area |
-| Calm & comfort | Visible redness or irritation |
-| Texture & smoothness | Fine surface micro-texture |
-| Apparent hydration | How plump and light-diffusing the surface looks |
-| Pore refinement | Visibility of pores at this distance |
-| Even pigmentation | Darker spots and patches |
-| Oil & moisture balance | Where the skin sits between dry and oily |
+| Forward head (craniovertebral angle) | Head tilt |
+| Shoulder position vs plumb line | Shoulder level |
+| Trunk lean | Hip level |
+| Pelvic tilt proxy | Knee tracking |
+| Knee position · shin angle | |
 
-Results come with gentle lifestyle suggestions, a photo-quality check, and a
-history strip so changes are visible over time.
+Each measure is rated against reference ranges from posture-screening
+literature, scored, and paired with corrective work for whatever falls out of
+range. Re-scan later and the report shows the delta per measure.
 
-> **This is a general wellness tool, not a medical device.** It does not
-> diagnose, treat or screen for any condition. Anything changing, painful or
-> worrying belongs with a doctor or dermatologist.
+> **Screening, not diagnosis.** These are photogrammetric estimates from one 2D
+> frame — camera height, footwear, clothing and stance all move the numbers.
 
-### 3. Clients & sessions
+### 3. Body — composition and change heatmap
 
-Client list with notes, goals and height (used for speed estimates), full
-session history with per-set breakdowns, and skin-scan history per client.
-Export/import everything as a JSON backup.
+Uses the pose model's person segmentation mask to trace your outline, measure
+its width at eight anatomical levels, and convert to centimetres via your
+height. Reports waist-to-height and waist-to-hip, and once you have two scans,
+tints the silhouette by where you actually changed — cool where it shrank, warm
+where it grew.
+
+> **On body fat:** a camera cannot see beneath the skin, so Krysaril will not
+> print a body-fat percentage off a photo. Enter three tape measurements and it
+> applies the US Navy formula, which typically sits within 3–4 points of DEXA.
+> The photograph itself is never stored — only the outline.
+
+### 4. Speed — strike output and rounds
+
+Round timer with rest periods, strike detection from arm extension against the
+athlete's own reach, hand speed in m/s, and output as strikes per minute over a
+rolling ten-second window so a flurry shows as a flurry. Per-round breakdown
+with a strike-density sparkline.
+
+### 5. Skin — wellness snapshot
+
+Tone evenness, localised redness, micro-texture, apparent hydration, pore
+visibility, pigmentation and oil balance, measured against your own baseline so
+results hold across skin tones.
+
+### Clients
+
+Every session, assessment and scan files against a client record with notes,
+goals, height and tape measurements. Full history, JSON export/import.
 
 ---
 
 ## Running it
 
-Any static file server works — there is **no build step**.
+No build step. Any static file server works.
 
 ```bash
 npm start          # http://localhost:8080
 ```
 
-Camera access requires a **secure context**: `https://` or `localhost`. To test
-on a real phone on your network, put it behind HTTPS (a tunnel such as
-`ngrok`/`cloudflared`, or a self-signed certificate).
-
-### Installing to the home screen
-
-- **iPhone (Safari):** Share → *Add to Home Screen*
-- **Android (Chrome):** menu → *Install app* (or the in-app Install button)
-
-### Optional: fully offline / self-hosted models
-
-By default the MediaPipe runtime and pose model load from a CDN on first use
-and are then cached by the service worker. To self-host them instead (offline
-from the very first launch, no third-party requests):
-
-```bash
-npm run vendor          # lite model  (~28 MB in ./vendor)
-npm run vendor:full     # also fetch the higher-accuracy model
-```
-
-The app detects `./vendor/vendor.json` at runtime and prefers local assets
-automatically. `vendor/` is git-ignored — run this at deploy time.
+Camera access needs a **secure context**: `https://` or `localhost`.
 
 ### Getting it onto a phone
 
-Phones need HTTPS for camera access, so pick one:
+**GitHub Pages** — Settings → Pages → Deploy from a branch → `main` → `/ (root)`.
+Live at `https://<user>.github.io/<repo>/` about a minute later; open on the
+phone and Add to Home Screen. Requires a public repo (or a paid plan).
 
-**GitHub Pages** (easiest, permanent)
-Repo → *Settings* → *Pages* → Source *Deploy from a branch* → pick this branch,
-folder `/ (root)` → *Save*. A minute later the app is live at
-`https://<user>.github.io/<repo>/` — open it on the phone and *Add to Home
-Screen*. (Pages on a private repo needs a paid plan.)
-
-**A tunnel** (good for a quick trial from your laptop)
+**A tunnel** — for a quick trial from your laptop:
 
 ```bash
-npm start                                   # terminal 1
-npx --yes cloudflared tunnel --url http://localhost:8080   # terminal 2
+npm start                                                   # terminal 1
+npx --yes cloudflared tunnel --url http://localhost:8080    # terminal 2
 ```
 
-Open the printed `https://….trycloudflare.com` URL on the phone.
+### Optional: self-hosted models
 
-### Deploying
+By default the MediaPipe runtime and pose model load from a CDN on first use and
+are cached by the service worker. To self-host them (offline from first launch,
+zero third-party requests):
 
-Copy the repository contents to any static host (GitHub Pages, Netlify, S3,
-nginx). Everything uses relative paths and hash-based routing, so it works from
-a subdirectory without server rewrites — `npm run e2e:subpath` verifies exactly
-that case in a browser.
+```bash
+npm run vendor          # lite model, ~28 MB into ./vendor
+npm run vendor:full     # also fetch the higher-accuracy model
+```
+
+The app detects `./vendor/vendor.json` at runtime and prefers local assets.
+`vendor/` is git-ignored — run this at deploy time.
 
 ---
 
 ## Testing
 
 ```bash
-npm test              # pose maths + rep engine (node:test, no browser)
-node test/e2e.mjs     # full browser run: fake camera, real MediaPipe, PWA checks
-npm run e2e:subpath   # same app served from a subdirectory (GitHub Pages case)
+npm test              # 34 unit tests: pose, posture, body and speed maths
+npm run e2e           # full browser run with a fake camera
+npm run e2e:subpath   # served from a subdirectory (the GitHub Pages case)
 ```
 
-`npm test` synthesises poses with forward kinematics, so joint angles have an
-exact ground truth to assert against, and drives the rep engine through
-squats, push-ups, presses and a simulated running gait.
+`npm test` synthesises poses with forward kinematics, so every joint angle,
+posture measure and silhouette width has an exact ground truth to assert
+against. It drives the rep engine through squats, push-ups and presses, checks
+the posture bands at their edges, verifies the US Navy formula against worked
+examples, and confirms strike detection counts one strike per extension cycle
+and none while a hand sits at guard.
 
-`test/e2e.mjs` launches Chromium with a fake camera, walks the whole app
-(client creation → live analysis → skin scan → history), verifies the pose
-model actually initialises against a live `MediaStream`, checks the skin
-engine separates calm skin from irritated skin on both light and deep skin
-tones, and confirms the service worker precaches the shell. Screenshots land
-in `test-results/`.
+`npm run e2e` launches Chromium with a fake camera, walks every screen, verifies
+the pose model initialises against a live `MediaStream`, exercises the posture,
+body and skin engines in-page, runs a live round on the speed tracker, and
+confirms the service worker precaches the shell. Screenshots land in
+`test-results/`.
 
 Regenerate the icon set with `npm run icons`.
 
@@ -148,19 +148,17 @@ manifest.webmanifest  installability, shortcuts, icons
 js/
   main.js             route table, SW registration, install prompt
   router.js           hash router with screen lifecycle (destroy stops cameras)
-  store.js            IndexedDB: clients, sessions, scans, settings, backups
-  camera.js           getUserMedia, permission diagnostics, wake lock, frame loop
+  store.js            IndexedDB: clients, sessions, postures, body scans,
+                      rounds, skin scans, settings, backups
+  camera.js           getUserMedia, permission diagnostics, wake lock, frames
   ui.js               DOM helpers, sheets, toasts, rings, formatting
   session-state.js    the in-progress session (survives an accidental reload)
-  pose/
-    angles.js         One Euro smoothing + joint geometry
-    exercises.js      per-exercise rep spec, form checks and cues
-    analyzer.js       rep state machine, scoring, cadence and speed
-    landmarker.js     MediaPipe loading (vendor → CDN), GPU with CPU fallback
-    overlay.js        skeleton + angle rendering in display space
-  skin/
-    analyze.js        Lab conversion, adaptive skin mask, frequency analysis
-    guidance.js       wellness copy, suggestions, trends
+  pose/               One Euro smoothing · joint geometry · exercise rules ·
+                      rep state machine · MediaPipe loading · overlay
+  posture/            clinical measures, reference bands, annotated chart
+  body/               silhouette measurement, ratios, change heatmap
+  speed/              strike detection, hand speed, round summaries
+  skin/               Lab conversion, adaptive skin mask, frequency analysis
   screens/            one module per route
 ```
 
@@ -168,34 +166,39 @@ js/
 never skews a reading, and smoothed with a One Euro filter — low jitter when
 still, low lag when moving.
 
-**Reps** use a hysteresis state machine on the exercise's primary joint, with a
-350 ms debounce so a bounce at the top never counts. Each rep is scored from
-weighted checks evaluated against the *worst* value reached inside that rep,
+**Reps** use a hysteresis state machine on the primary joint with a 350 ms
+debounce. Each rep is scored against the *worst* value reached inside that rep,
 not the value at the instant it ended.
 
-**Speed** for running scales step length by the client's height. It is a solid
-relative measure between sessions, not a calibrated instrument — the UI always
-labels it as an estimate.
+**Posture** measures the craniovertebral angle from the shoulder–ear line, and
+everything else against a plumb line from the ankle. Reference ranges are
+population guides: a value outside them is a prompt to look closer, not a
+verdict.
 
-**Skin metrics** are measured relative to the person's *own* baseline tone
-(median inside the framing guide) and normalised by local brightness. The skin
-mask is deliberately asymmetric — tight on the blue/green side to reject hair
-and background, open on the red side so flushed or irritated skin is measured
-rather than discarded. That keeps readings consistent across skin tones and
-lighting.
+**Body** converts silhouette width to circumference assuming an elliptical
+cross-section (depth is invisible from one angle) — the largest error term in
+that feature, and stated as such in the app.
 
-**Performance**: inference runs on the GPU delegate where available (CPU
-fallback is automatic), frames are driven by `requestVideoFrameCallback` where
-supported, and the loop adapts its frame budget to measured inference cost so
-the preview stays smooth on mid-range phones. HUD text repaints at ~11 Hz
-independently of the render loop.
+**Skin** measures redness relative to your own baseline rather than an absolute
+threshold. A uniformly warm complexion is someone's natural tone, not
+irritation; treating it otherwise would penalise deeper and warmer skin tones,
+so only *localised* redness counts.
+
+**Performance**: GPU delegate where available with automatic CPU fallback,
+`requestVideoFrameCallback` where supported, and a frame budget that adapts to
+measured inference cost. Static-capture screens throttle to ~10 fps since a
+held pose needs no more.
 
 ---
 
 ## Privacy
 
-Camera frames are processed in memory and never recorded or transmitted.
-Clients, sessions and scans live in IndexedDB on the device; skin scans keep a
-small local thumbnail. The only network requests the app can make are for the
-pose model and runtime (skipped entirely when self-hosted). Settings → *Export
-backup* moves your data; Settings → *Delete everything* removes it.
+Camera frames are processed in memory and never transmitted. The body scan keeps
+only the silhouette outline; the photograph is discarded. Clients, sessions,
+assessments and scans live in IndexedDB on the device. The only network requests
+the app can make are for the pose model and runtime — skipped entirely when
+self-hosted. Settings → Export backup moves your data; Settings → Delete
+everything removes it.
+
+Krysaril is a coaching and screening aid. It does not replace a qualified
+trainer, a physiotherapist or a doctor.
