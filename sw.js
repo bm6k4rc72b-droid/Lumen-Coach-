@@ -1,5 +1,5 @@
 /**
- * Lumen Coach service worker.
+ * Krysaril service worker.
  *
  * • App shell   → precached, cache-first (instant launch, works offline)
  * • Navigation  → shell fallback so the installed app always opens
@@ -7,10 +7,10 @@
  * • Everything else → network-first with a cache fallback
  */
 
-const VERSION = 'v1.0.0';
-const SHELL_CACHE = `lumen-shell-${VERSION}`;
-const MODEL_CACHE = 'lumen-models-v1';
-const RUNTIME_CACHE = `lumen-runtime-${VERSION}`;
+const VERSION = 'v2.0.0';
+const SHELL_CACHE = `krysaril-shell-${VERSION}`;
+const MODEL_CACHE = 'krysaril-models-v1';
+const RUNTIME_CACHE = `krysaril-runtime-${VERSION}`;
 
 const SHELL = [
   './',
@@ -30,13 +30,25 @@ const SHELL = [
   './js/pose/overlay.js',
   './js/skin/analyze.js',
   './js/skin/guidance.js',
+  './js/posture/analyze.js',
+  './js/posture/render.js',
+  './js/body/silhouette.js',
+  './js/body/heatmap.js',
+  './js/speed/analyzer.js',
   './js/screens/home.js',
   './js/screens/clients.js',
   './js/screens/client.js',
   './js/screens/train.js',
   './js/screens/live.js',
   './js/screens/skin.js',
-  './js/screens/scan.js',
+  './js/screens/skinscan.js',
+  './js/screens/scanhub.js',
+  './js/screens/posture.js',
+  './js/screens/posturereport.js',
+  './js/screens/body.js',
+  './js/screens/bodyreport.js',
+  './js/screens/speed.js',
+  './js/screens/roundreport.js',
   './js/screens/session.js',
   './js/screens/history.js',
   './js/screens/settings.js',

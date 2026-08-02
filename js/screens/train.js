@@ -4,7 +4,7 @@ import { listClients, getSettings, setSetting } from '../store.js';
 import { navigate } from '../router.js';
 import { getActive, startSession, setClient, removeSet, finishSession, sessionStats, discardSession } from '../session-state.js';
 
-const LAST_EXERCISE_KEY = 'lumen.lastExercise';
+const LAST_EXERCISE_KEY = 'krysaril.lastExercise';
 
 export async function render() {
   const [clients, settings] = await Promise.all([listClients(), getSettings()]);
@@ -57,8 +57,8 @@ export async function render() {
         onclick: () => { exerciseId = ex.id; localStorage.setItem(LAST_EXERCISE_KEY, ex.id); paintExercises(); paintSetup(); },
         style: {
           padding: '14px 12px', textAlign: 'left', cursor: 'pointer', margin: 0,
-          borderColor: selected ? 'var(--rose)' : undefined,
-          background: selected ? 'rgba(240,165,187,.10)' : undefined,
+          borderColor: selected ? 'var(--gold-line)' : undefined,
+          background: selected ? 'var(--gold-wash)' : undefined,
         },
       },
         el('div', { style: { fontSize: '24px', lineHeight: '1' } }, ex.emoji),
@@ -138,6 +138,24 @@ export async function render() {
     el('div.section', null,
       el('div.section-head', null, el('h2', 'Client')),
       clientBtn,
+    ),
+    el('div.section', null,
+      el('div.section-head', null, el('h2', 'Mode')),
+      el('div.btn-row', null,
+        el('button.card', {
+          style: { padding: '15px 13px', textAlign: 'left', cursor: 'pointer', margin: 0, borderColor: 'var(--gold-line)', background: 'var(--gold-wash)' },
+        },
+          el('div', { style: { fontSize: '15px', fontWeight: '650' } }, 'Form analysis'),
+          el('div.tiny.muted', { style: { marginTop: '3px' } }, 'Reps, angles, scoring'),
+        ),
+        el('button.card', {
+          onclick: () => navigate('/speed'),
+          style: { padding: '15px 13px', textAlign: 'left', cursor: 'pointer', margin: 0 },
+        },
+          el('div', { style: { fontSize: '15px', fontWeight: '650' } }, 'Speed & output'),
+          el('div.tiny.muted', { style: { marginTop: '3px' } }, 'Rounds, strikes, m/s'),
+        ),
+      ),
     ),
     el('div.section', null,
       el('div.section-head', null, el('h2', 'Exercise')),

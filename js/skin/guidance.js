@@ -202,4 +202,4 @@ export function trend(current, previous) {
 }
 
 export const DISCLAIMER =
-  'Lumen Skin is a general wellness tool. It looks at lighting, colour and texture in your photo — it does not diagnose, treat or screen for any medical condition. If something on your skin is changing, painful or worrying you, please see a doctor or dermatologist.';
+  'Krysaril Skin is a general wellness tool. It looks at lighting, colour and texture in your photo — it does not diagnose, treat or screen for any medical condition. If something on your skin is changing, painful or worrying you, please see a doctor or dermatologist.';

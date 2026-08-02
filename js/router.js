@@ -84,7 +84,7 @@ async function handle() {
   window.scrollTo(0, 0);
 
   applyChrome(screen, path);
-  document.title = screen.title ? `${screen.title} · Lumen Coach` : 'Lumen Coach';
+  document.title = screen.title ? `${screen.title} · Krysaril` : 'Krysaril';
   document.body.classList.toggle('immersive', !!screen.full);
 }
 
@@ -107,7 +107,7 @@ function applyChrome(screen, path) {
   bar.hidden = !!screen.hideAppBar;
   tabbar.hidden = !!screen.hideTabBar;
 
-  titleEl.textContent = screen.title || 'Lumen';
+  titleEl.textContent = screen.title || 'Krysaril';
   subEl.textContent = screen.subtitle || '';
   subEl.hidden = !screen.subtitle;
 

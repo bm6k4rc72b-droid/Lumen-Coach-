@@ -95,7 +95,7 @@ export async function render() {
       el('div.stack', null,
         retry ? el('button.btn.btn-primary.btn-lg.btn-block', { onclick: boot }, 'Try again') : null,
         el('button.btn.btn-lg.btn-block.btn-ghost', { onclick: () => libraryInput.click() }, 'Use a photo instead'),
-        el('button.btn.btn-lg.btn-block.btn-quiet', { onclick: () => navigate('/') }, 'Go back'),
+        el('button.btn.btn-lg.btn-block.btn-quiet', { onclick: () => navigate('/scan') }, 'Go back'),
       ),
     ));
   }
@@ -169,7 +169,7 @@ export async function render() {
     await runAnalysis(canvas, canvas.toDataURL('image/jpeg', 0.9));
   };
 
-  closeBtn.onclick = () => navigate('/');
+  closeBtn.onclick = () => navigate('/scan');
 
   /* ----------------------------------------------------------- analysis */
   async function runAnalysis(source, previewUrl) {
@@ -225,7 +225,7 @@ export async function render() {
         el('div', { style: { fontWeight: '680', fontSize: '16px' } }, 'Skin snapshot'),
         el('div.tiny.muted', client ? client.name : 'Personal scan'),
       ),
-      el('button.icon-btn.solid', { 'aria-label': 'Close', onclick: () => navigate('/') }, icon('close')),
+      el('button.icon-btn.solid', { 'aria-label': 'Close', onclick: () => navigate('/scan') }, icon('close')),
     ));
 
     if (!result.quality.good) {
@@ -300,7 +300,7 @@ export async function render() {
         });
         haptic(18);
         toast('Scan saved', 'good');
-        navigate(`/scan/${saved.id}`);
+        navigate(`/skinscan/${saved.id}`);
       } catch (err) {
         console.error(err);
         toast('Could not save the scan', 'bad');

@@ -9,7 +9,7 @@ export async function render({ params }) {
     return {
       title: 'Scan not found',
       back: '/history',
-      node: el('div.empty', null, el('h3', 'This scan no longer exists'), el('a.btn.btn-primary', { href: '#/history' }, 'Back to history')),
+      node: el('div.empty', null, el('h3', 'This scan no longer exists'), el('a.btn.btn-primary', { href: '#/scan' }, 'Back to scans')),
     };
   }
 
@@ -72,7 +72,7 @@ export async function render({ params }) {
     node.append(el('div.section', null,
       el('div.section-head', el('h2', 'Progress')),
       el('div.thumb-strip', null, ...siblings.slice(0, 14).map((s) => el('button.thumb', {
-        onclick: () => navigate(`/scan/${s.id}`),
+        onclick: () => navigate(`/skinscan/${s.id}`),
         style: s.id === scan.id ? { borderColor: 'var(--rose)' } : null,
       },
         s.thumb ? el('img', { src: s.thumb, alt: '' })
@@ -90,14 +90,14 @@ export async function render({ params }) {
       if (!ok) return;
       await deleteScan(scan.id);
       toast('Scan deleted');
-      back('/history');
+      back('/scan');
     },
   }, icon('trash'), 'Delete scan'));
 
   return {
     title: 'Skin scan',
     subtitle: `${fmtDate(scan.createdAt)}${scan.clientName ? ` · ${scan.clientName}` : ''}`,
-    back: () => back('/history'),
+    back: () => back('/scan'),
     node,
   };
 }

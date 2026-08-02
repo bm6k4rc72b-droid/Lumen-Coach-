@@ -1,5 +1,5 @@
 /**
- * Lumen Coach — app entry point.
+ * Krysaril — app entry point.
  * Registers routes, boots the service worker and wires the install prompt.
  */
 
@@ -13,8 +13,15 @@ route('/clients', () => import('./screens/clients.js'));
 route('/client/:id', () => import('./screens/client.js'));
 route('/train', () => import('./screens/train.js'));
 route('/live', () => import('./screens/live.js'));
+route('/speed', () => import('./screens/speed.js'));
+route('/round/:id', () => import('./screens/roundreport.js'));
+route('/scan', () => import('./screens/scanhub.js'));
 route('/skin', () => import('./screens/skin.js'));
-route('/scan/:id', () => import('./screens/scan.js'));
+route('/skinscan/:id', () => import('./screens/skinscan.js'));
+route('/posture', () => import('./screens/posture.js'));
+route('/posture/:id', () => import('./screens/posturereport.js'));
+route('/body', () => import('./screens/body.js'));
+route('/bodyscan/:id', () => import('./screens/bodyreport.js'));
 route('/history', () => import('./screens/history.js'));
 route('/session/:id', () => import('./screens/session.js'));
 route('/settings', () => import('./screens/settings.js'));
@@ -54,13 +61,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   install.deferred = e;
   install.available = true;
-  window.dispatchEvent(new CustomEvent('lumen:installable'));
+  window.dispatchEvent(new CustomEvent('krysaril:installable'));
 });
 
 window.addEventListener('appinstalled', () => {
   install.deferred = null;
   install.available = false;
-  toast('Lumen added to your home screen', 'good');
+  toast('Krysaril added to your home screen', 'good');
 });
 
 export async function promptInstall() {

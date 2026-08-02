@@ -43,7 +43,7 @@ export async function render() {
   const appCard = el('div.card');
   if (!isStandalone) {
     appCard.append(install.available
-      ? row('Install app', 'Add Lumen to your home screen', async () => {
+      ? row('Install app', 'Add Krysaril to your home screen', async () => {
         const ok = await promptInstall();
         if (ok) toast('Installing…', 'good');
       })
@@ -65,7 +65,7 @@ export async function render() {
         const data = await exportAll();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        const a = el('a', { href: url, download: `lumen-backup-${new Date().toISOString().slice(0, 10)}.json` });
+        const a = el('a', { href: url, download: `krysaril-backup-${new Date().toISOString().slice(0, 10)}.json` });
         document.body.append(a);
         a.click();
         a.remove();
@@ -77,10 +77,10 @@ export async function render() {
       }
     }),
     importRow(),
-    row('Delete everything', 'Clients, sessions and scans on this device', async () => {
+    row('Delete everything', 'Clients, sessions, assessments and scans on this device', async () => {
       const ok = await confirmSheet({
         title: 'Delete all data?',
-        message: 'Every client, session and skin scan stored on this device will be removed. This cannot be undone.',
+        message: 'Every client, session, assessment and scan stored on this device will be removed. This cannot be undone.',
         confirmText: 'Delete everything',
         danger: true,
       });
@@ -97,7 +97,7 @@ export async function render() {
   }
 
   node.append(el('p.tiny.muted.center.mt-24', { style: { lineHeight: '1.6' } },
-    'Lumen Coach · everything runs on-device',
+    'Krysaril · everything runs on-device',
     el('br'),
     'Wellness guidance only — not medical advice.'));
 
@@ -150,7 +150,7 @@ function importRow() {
     if (!file) return;
     try {
       const counts = await importAll(JSON.parse(await file.text()));
-      toast(`Imported ${counts.clients} clients, ${counts.sessions} sessions, ${counts.scans} scans`, 'good', 4000);
+      toast(`Imported ${counts.clients} clients and ${counts.sessions + counts.scans + counts.postures + counts.bodyscans + counts.rounds} records`, 'good', 4000);
       navigate('/');
     } catch (err) {
       console.error(err);

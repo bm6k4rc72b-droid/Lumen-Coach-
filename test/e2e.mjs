@@ -1,11 +1,11 @@
 /**
  * End-to-end smoke test in a real browser with a fake camera.
  *
- *   node scripts/../test/e2e.mjs          (see npm run e2e)
+ *   npm run e2e
  *
- * Verifies: routing, IndexedDB persistence, the pose pipeline actually
- * initialising against a live MediaStream, the skin analyser producing a
- * complete result, and the service worker registering.
+ * Verifies: routing, IndexedDB persistence, the pose pipeline initialising
+ * against a live MediaStream, the posture / body / skin / speed engines
+ * producing complete results, and the service worker registering.
  */
 
 import { chromium } from 'playwright';
@@ -75,6 +75,7 @@ await page.goto(BASE + '/index.html#/', { waitUntil: 'networkidle' });
 await page.waitForSelector('.hero', { timeout: 10000 });
 check('app shell renders', await page.locator('.hero h2').isVisible());
 check('tab bar present', (await page.locator('.tabbar .tab').count()) === 5);
+check('four capture entry points', (await page.locator('.section .card').count()) >= 4);
 await shot('01-dashboard');
 
 console.log('\n▸ Client creation (IndexedDB)');
@@ -94,7 +95,7 @@ await shot('02-client');
 
 const stored = await page.evaluate(async () => {
   const db = await new Promise((res, rej) => {
-    const r = indexedDB.open('lumen-coach');
+    const r = indexedDB.open('krysaril');
     r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
   });
   return new Promise((res) => {
@@ -275,15 +276,142 @@ check('disclaimer shown', (await page.locator('.disclaimer').first().textContent
 await shot('06-skin-results');
 
 await page.click('button:has-text("Save to history")');
-await page.waitForURL(/#\/scan\//, { timeout: 10000 });
+await page.waitForURL(/#\/skinscan\//, { timeout: 10000 });
 await page.waitForSelector('.big-score', { timeout: 10000 }).catch(() => {});
 check('scan saved and detail opens', await page.locator('.big-score').isVisible());
 check('saved scan shows its metrics', (await page.locator('.metric').count()) >= 5);
 await shot('07-scan-detail');
 
+console.log('\n▸ Scan hub');
+await page.goto(BASE + '/index.html#/scan', { waitUntil: 'networkidle' });
+await page.waitForSelector('.hero');
+check('scan hub lists three assessments', (await page.locator('.section > .card').count()) >= 3);
+await shot('10-scan-hub');
+
+console.log('\n▸ Posture assessment (fake camera + real MediaPipe)');
+await page.goto(BASE + '/index.html#/posture', { waitUntil: 'networkidle' });
+await page.waitForSelector('.shutter', { timeout: 15000 });
+await page.waitForFunction(() => !document.querySelector('.shutter')?.disabled, null, { timeout: 90000 }).catch(() => {});
+check('posture capture ready', !(await page.locator('.shutter').isDisabled()));
+check('plumb-line guide shown', await page.locator('.guide-plumb').isVisible());
+await shot('11-posture-capture');
+
+// The fake camera shows no person, so exercise the maths directly in-page.
+const posture = await page.evaluate(async () => {
+  const { analyzePosture, postureWork } = await import('./js/posture/analyze.js');
+  const { renderPostureChart, chartThumbnail } = await import('./js/posture/render.js');
+  const W = 720, H = 1280, rad = (d) => (d * Math.PI) / 180;
+  const lm = Array.from({ length: 33 }, () => ({ x: 0, y: 0, z: 0, visibility: 1 }));
+  const put = (i, x, y) => { lm[i] = { x: x / W, y: y / H, z: 0, visibility: 1 }; };
+  const A = { x: 300, y: 1150 }, K = { x: 307, y: 950 }, Hip = { x: 300, y: 742 };
+  const S = { x: 312, y: 465 };
+  const E = { x: S.x + 90 * Math.cos(rad(41)), y: S.y - 90 * Math.sin(rad(41)) };
+  const o = 6;
+  put(0, E.x + 30, E.y + 4);
+  put(2, E.x - o, E.y); put(5, E.x + o, E.y);
+  put(7, E.x - o, E.y); put(8, E.x + o, E.y);
+  put(11, S.x - o, S.y); put(12, S.x + o, S.y);
+  put(13, S.x, S.y + 110); put(14, S.x, S.y + 110);
+  put(15, S.x, S.y + 210); put(16, S.x, S.y + 210);
+  put(23, Hip.x - o, Hip.y); put(24, Hip.x + o, Hip.y);
+  put(25, K.x - o, K.y); put(26, K.x + o, K.y);
+  put(27, A.x - o, A.y); put(28, A.x + o, A.y);
+  put(31, A.x + 60, A.y + 12); put(32, A.x + 60, A.y + 12);
+
+  const analysis = analyzePosture(lm, W, H, { view: 'side' });
+  const frame = document.createElement('canvas');
+  frame.width = W; frame.height = H;
+  const ctx = frame.getContext('2d');
+  ctx.fillStyle = '#333'; ctx.fillRect(0, 0, W, H);
+  const chart = renderPostureChart(frame, lm, analysis);
+  return {
+    view: analysis.view,
+    overall: analysis.overall,
+    measures: Object.fromEntries(Object.entries(analysis.measures).map(([k, v]) => [k, [v.value, v.level]])),
+    work: postureWork(analysis).length,
+    chartW: chart.width,
+    thumbLen: chartThumbnail(chart).length,
+  };
+});
+check('posture analysis runs in the browser', posture.view === 'side' && Number.isFinite(posture.overall),
+  `overall=${posture.overall}`);
+check('forward head detected on a slumped pose', posture.measures.forwardHead?.[1] !== 'good',
+  JSON.stringify(posture.measures.forwardHead));
+check('annotated chart rendered', posture.chartW > 0 && posture.thumbLen > 1000,
+  `${posture.chartW}px, thumb ${posture.thumbLen} chars`);
+check('corrective work produced', posture.work >= 1, `${posture.work} areas`);
+
+console.log('\n▸ Body composition maths');
+const body = await page.evaluate(async () => {
+  const { measureSilhouette, compareScans } = await import('./js/body/silhouette.js');
+  const { renderBodyMap, annotateLevels, bodyThumbnail } = await import('./js/body/heatmap.js');
+  const w = 180, h = 320;
+  const build = (waistW) => {
+    const mask = new Float32Array(w * h);
+    for (let y = 0; y < h; y++) {
+      const isWaist = y > h * 0.36 && y < h * 0.52;
+      const half = (isWaist ? waistW : 46) / 2;
+      for (let x = 0; x < w; x++) if (Math.abs(x - w / 2) <= half) mask[y * w + x] = 1;
+    }
+    return mask;
+  };
+  const lm = Array.from({ length: 33 }, () => ({ x: 0, y: 0, z: 0, visibility: 1 }));
+  const put = (i, x, y) => { lm[i] = { x: x / w, y: y / h, z: 0, visibility: 1 }; };
+  const cx = w / 2;
+  put(0, cx, h * 0.10); put(7, cx - 12, h * 0.09); put(8, cx + 12, h * 0.09);
+  put(11, cx - 40, h * 0.20); put(12, cx + 40, h * 0.20);
+  put(23, cx - 26, h * 0.52); put(24, cx + 26, h * 0.52);
+  put(25, cx - 22, h * 0.72); put(26, cx + 22, h * 0.72);
+  put(27, cx - 20, h * 0.94); put(28, cx + 20, h * 0.94);
+
+  const before = measureSilhouette(build(60), w, h, lm, { heightCm: 175 });
+  const maskNow = build(46);
+  const now = measureSilhouette(maskNow, w, h, lm, { heightCm: 175 });
+  const cmp = compareScans(now, before);
+  const map = renderBodyMap(maskNow, now, cmp.profileDelta);
+  annotateLevels(map, now, cmp);
+  return {
+    waistCm: now.widths.waist?.cm,
+    whtr: now.ratios.waistToHeight,
+    whr: now.ratios.waistToHip,
+    waistDelta: cmp.levels.waist.deltaCm,
+    direction: cmp.levels.waist.direction,
+    mapW: map.width,
+    thumbLen: bodyThumbnail(map).length,
+  };
+});
+check('silhouette measured', body.waistCm > 0 && body.whtr > 0, `waist ${body.waistCm}cm WHtR ${body.whtr}`);
+check('waist reduction detected', body.waistDelta < 0 && body.direction === 'down', `${body.waistDelta} cm`);
+check('heatmap rendered', body.mapW > 0 && body.thumbLen > 1000, `${body.mapW}px, thumb ${body.thumbLen}`);
+
+console.log('\n▸ Body scan screen');
+await page.goto(BASE + '/index.html#/body', { waitUntil: 'networkidle' });
+await page.waitForSelector('.shutter', { timeout: 15000 });
+await page.waitForFunction(() => !document.querySelector('.shutter')?.disabled, null, { timeout: 90000 }).catch(() => {});
+check('body capture ready', !(await page.locator('.shutter').isDisabled()));
+await shot('12-body-capture');
+
+console.log('\n▸ Speed & output');
+await page.goto(BASE + '/index.html#/speed', { waitUntil: 'networkidle' });
+await page.waitForSelector('.round-clock', { timeout: 15000 });
+await page.waitForFunction(() => document.querySelector('.perm')?.hidden, null, { timeout: 90000 }).catch(() => {});
+check('speed tracker started', await page.locator('.perm').isHidden());
+check('round clock shown', (await page.locator('.round-clock').textContent()).includes(':'));
+check('three live metric tiles', (await page.locator('.metric-tile').count()) === 3);
+await page.click('button:has-text("Start round")');
+await page.waitForTimeout(1200);
+check('round goes live', (await page.locator('.rep-hud').textContent()).toLowerCase().includes('live'));
+await shot('13-speed-live');
+await page.click('button:has-text("End round")');
+await page.waitForTimeout(400);
+check('round ends cleanly', !(await page.locator('button:has-text("Start round")').isDisabled()));
+
 console.log('\n▸ History, settings, PWA');
 await page.goto(BASE + '/index.html#/history', { waitUntil: 'networkidle' });
+await page.waitForSelector('.chip');
+check('history has a tab per record type', (await page.locator('.chip').count()) === 5);
 await page.click('.chip:has-text("Skin")');
+await page.waitForTimeout(200);
 check('skin history lists the saved scan', (await page.locator('.row').count()) >= 1);
 await shot('08-history');
 
@@ -299,6 +427,7 @@ check('about screen renders', (await page.locator('.card').count()) >= 4,
 
 const manifest = await (await fetch(BASE + '/manifest.webmanifest')).json();
 check('manifest is valid JSON with icons', manifest.icons.length >= 4, manifest.name);
+check('manifest renamed to Krysaril', manifest.short_name === 'Krysaril', manifest.short_name);
 
 const swReady = await page.evaluate(async () => {
   const reg = await navigator.serviceWorker.getRegistration();
@@ -312,7 +441,7 @@ const cached = await page.evaluate(async () => {
   for (const k of keys) counts[k] = (await (await caches.open(k)).keys()).length;
   return counts;
 });
-check('app shell precached', Object.entries(cached).some(([k, n]) => k.includes('shell') && n > 20),
+check('app shell precached', Object.entries(cached).some(([k, n]) => k.includes('shell') && n > 25),
   JSON.stringify(cached));
 
 console.log('\n▸ Console health');
