@@ -16,6 +16,9 @@ const STORES = {
   postures: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
   bodyscans: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
   rounds: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
+  labs: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
+  vitals: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
+  programs: { keyPath: 'id', indexes: [['clientId', 'clientId'], ['createdAt', 'createdAt']] },
   settings: { keyPath: 'key', indexes: [] },
 };
 
@@ -171,8 +174,9 @@ export async function touchClient(id) {
 export async function deleteClient(id) {
   const owned = await Promise.all([
     listSessions(id), listScans(id), listPostures(id), listBodyScans(id), listRounds(id),
+    listLabs(id), listVitals(id), listPrograms(id),
   ]);
-  const names = ['sessions', 'scans', 'postures', 'bodyscans', 'rounds'];
+  const names = ['sessions', 'scans', 'postures', 'bodyscans', 'rounds', 'labs', 'vitals', 'programs'];
   await tx(['clients', ...names], 'readwrite', ([clients, ...rest]) => {
     clients.delete(id);
     rest.forEach((store, i) => owned[i].forEach((row) => store.delete(row.id)));
@@ -213,6 +217,9 @@ const scanStore = makeStore('scans', 'scn');
 const postureStore = makeStore('postures', 'pos');
 const bodyStore = makeStore('bodyscans', 'bod');
 const roundStore = makeStore('rounds', 'rnd');
+const labStore = makeStore('labs', 'lab');
+const vitalStore = makeStore('vitals', 'vit');
+const programStore = makeStore('programs', 'prg');
 
 export const listSessions = sessionStore.list;
 export const getSession = sessionStore.get;
@@ -238,6 +245,39 @@ export const listRounds = roundStore.list;
 export const getRound = roundStore.get;
 export const saveRound = roundStore.save;
 export const deleteRound = roundStore.remove;
+
+export const listLabs = labStore.list;
+export const getLabs = labStore.get;
+export const saveLabs = labStore.save;
+export const deleteLabs = labStore.remove;
+
+export const listVitals = vitalStore.list;
+export const getVitals = vitalStore.get;
+export const saveVitals = vitalStore.save;
+export const deleteVitals = vitalStore.remove;
+
+export const listPrograms = programStore.list;
+export const getProgram = programStore.get;
+export const saveProgram = programStore.save;
+export const deleteProgram = programStore.remove;
+
+/** Everything currently known about a client, for the coach and programs. */
+export async function latestFor(clientId = null) {
+  const [posture, body, sessions, skin, vitals, labs, program] = await Promise.all([
+    listPostures(clientId, 1), listBodyScans(clientId, 1), listSessions(clientId, 8),
+    listScans(clientId, 1), listVitals(clientId, 20), listLabs(clientId, 1), listPrograms(clientId, 1),
+  ]);
+  return {
+    posture: posture[0] || null,
+    body: body[0] || null,
+    sessions,
+    skin: skin[0] || null,
+    vitals: vitals[0] || null,
+    vitalsHistory: vitals,
+    labs: labs[0] || null,
+    program: program[0] || null,
+  };
+}
 
 /* ----------------------------------------------------------------- settings */
 
@@ -276,14 +316,16 @@ export async function setSetting(key, value) {
 /* ------------------------------------------------------------------ backups */
 
 export async function exportAll() {
-  const [clients, sessions, scans, postures, bodyscans, rounds, settings] = await Promise.all([
-    listClients(), listSessions(), listScans(), listPostures(), listBodyScans(), listRounds(), getSettings(),
-  ]);
+  const [clients, sessions, scans, postures, bodyscans, rounds, labs, vitals, programs, settings] =
+    await Promise.all([
+      listClients(), listSessions(), listScans(), listPostures(), listBodyScans(),
+      listRounds(), listLabs(), listVitals(), listPrograms(), getSettings(),
+    ]);
   return {
     app: 'krysaril',
     version: DB_VERSION,
     exportedAt: new Date().toISOString(),
-    clients, sessions, scans, postures, bodyscans, rounds, settings,
+    clients, sessions, scans, postures, bodyscans, rounds, labs, vitals, programs, settings,
   };
 }
 
@@ -291,7 +333,7 @@ export async function importAll(data) {
   if (!data || (data.app !== 'krysaril' && data.app !== 'lumen-coach')) {
     throw new Error('Not a Krysaril backup file.');
   }
-  const names = ['clients', 'sessions', 'scans', 'postures', 'bodyscans', 'rounds'];
+  const names = ['clients', 'sessions', 'scans', 'postures', 'bodyscans', 'rounds', 'labs', 'vitals', 'programs'];
   const counts = {};
   await tx(names, 'readwrite', (stores) => {
     names.forEach((name, i) => {

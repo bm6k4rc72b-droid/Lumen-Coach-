@@ -7,7 +7,7 @@
  * • Everything else → network-first with a cache fallback
  */
 
-const VERSION = 'v2.0.0';
+const VERSION = 'v3.0.0';
 const SHELL_CACHE = `krysaril-shell-${VERSION}`;
 const MODEL_CACHE = 'krysaril-models-v1';
 const RUNTIME_CACHE = `krysaril-runtime-${VERSION}`;
@@ -35,6 +35,13 @@ const SHELL = [
   './js/body/silhouette.js',
   './js/body/heatmap.js',
   './js/speed/analyzer.js',
+  './js/labs/panel.js',
+  './js/program/engine.js',
+  './js/vitals/rppg.js',
+  './js/assistant/knowledge.js',
+  './js/assistant/chat.js',
+  './js/assistant/voice.js',
+  './knowledge/kb.json',
   './js/screens/home.js',
   './js/screens/clients.js',
   './js/screens/client.js',
@@ -49,6 +56,11 @@ const SHELL = [
   './js/screens/bodyreport.js',
   './js/screens/speed.js',
   './js/screens/roundreport.js',
+  './js/screens/coach.js',
+  './js/screens/program.js',
+  './js/screens/labs.js',
+  './js/screens/labsreport.js',
+  './js/screens/vitals.js',
   './js/screens/session.js',
   './js/screens/history.js',
   './js/screens/settings.js',
@@ -120,13 +132,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Same-origin app files → cache-first with revalidation.
+  // 3. Knowledge base → always try the network so edits reach devices on the
+  //    next launch, falling back to cache when offline.
+  if (url.pathname.endsWith('/kb.json')) {
+    event.respondWith(networkFirst(request, SHELL_CACHE));
+    return;
+  }
+
+  // 4. Same-origin app files → cache-first with revalidation.
   if (url.origin === self.location.origin) {
     event.respondWith(staleWhileRevalidate(request, SHELL_CACHE));
     return;
   }
 
-  // 4. Anything else → network with cache fallback.
+  // 5. Anything else → network with cache fallback.
   event.respondWith(networkFirst(request, RUNTIME_CACHE));
 });
 

@@ -1,0 +1,168 @@
+{
+  "version": "2026.08.02",
+  "updated": "2026-08-02",
+  "notice": "Edit this file and redeploy — every client picks up the change on their next launch. The app fetches it network-first, so the knowledge base is never older than the last time the device was online.",
+  "entries": [
+    {
+      "id": "forward-head",
+      "topic": "Forward head posture",
+      "tags": ["forward head", "text neck", "craniovertebral", "neck", "posture", "rounded", "head"],
+      "answer": "Forward head posture is measured by the craniovertebral angle — the line from the shoulder to the ear against horizontal. Below about 48° is commonly described as forward head; below 43° is marked. Every 2.5 cm the head travels forward roughly doubles the load the neck extensors carry.\n\nWhat actually changes it: deep neck flexor strength (chin tucks), thoracic extension mobility, and — usually the biggest lever — where the screen sits. Stretching the neck alone rarely holds.",
+      "protocol": ["Chin tucks 3×10 with a 3-second hold, daily", "Prone Y-raise 3×12", "Screen raised to eye level", "Reassess in 4 weeks"]
+    },
+    {
+      "id": "rounded-shoulders",
+      "topic": "Rounded shoulders",
+      "tags": ["rounded shoulders", "protraction", "shoulder", "pecs", "hunched", "kyphosis"],
+      "answer": "Shoulder protraction is measured as how far the shoulder sits ahead of a plumb line dropped from the ankle. Under about 12° is unremarkable.\n\nThe pattern is usually short and stiff at the front with long and weak at the back. Both halves need addressing — stretching the chest without building the mid-back tends to relapse within weeks.",
+      "protocol": ["Doorway pec stretch 2×30 s each side", "Band pull-aparts 3×15", "Face pulls 3×12 with a pause", "4× a week for 6 weeks"]
+    },
+    {
+      "id": "anterior-pelvic-tilt",
+      "topic": "Anterior pelvic tilt",
+      "tags": ["pelvic tilt", "anterior", "lower back", "arch", "hip flexor", "pelvis", "lordosis"],
+      "answer": "Some anterior tilt is normal and varies a lot between people — it is only worth addressing when it comes with symptoms or restricts movement. A true measurement uses bony landmarks; a photo gives an approximation.\n\nWhere it does need work, the pairing is usually tight hip flexors with under-active glutes and a poorly braced abdominal wall.",
+      "protocol": ["Half-kneeling hip flexor stretch 2×45 s each side", "Glute bridges 3×12 with a 2-second squeeze", "Dead bugs 3×8 each side, ribs down", "4× a week"]
+    },
+    {
+      "id": "knee-valgus",
+      "topic": "Knee tracking and valgus",
+      "tags": ["knee", "valgus", "knees caving", "tracking", "squat knees", "acl"],
+      "answer": "Knees drifting inward under load usually reflects hip abductor and external rotator weakness rather than anything wrong with the knee itself. It matters because it is associated with patellofemoral pain and, in cutting sports, ACL injury.\n\nCue 'spread the floor' and train the hip, not the knee. Persistent pain needs a physiotherapist.",
+      "protocol": ["Banded lateral walks 3×15 each way", "Tempo goblet squats 4×8, 3 seconds down", "Step-downs from a low box 3×8 each leg"]
+    },
+    {
+      "id": "squat-depth",
+      "topic": "Squat depth",
+      "tags": ["squat", "depth", "parallel", "ankle", "dorsiflexion", "mobility"],
+      "answer": "Hip crease below the top of the knee is the usual definition of parallel. Depth is limited by ankle dorsiflexion far more often than by hip mobility — if the heels lift or the torso folds forward, test the ankle first with a knee-to-wall.\n\nNot everyone should squat deep. Hip anatomy varies genuinely between people; force depth and you borrow it from the lower back.",
+      "protocol": ["Knee-to-wall test to find the limiter", "Wall ankle mobilisation 2×10 each side", "Goblet squat holds 3×30 s at the bottom", "Tempo box squats 4×6 with a 2-second pause"]
+    },
+    {
+      "id": "hrv-basics",
+      "topic": "Heart rate variability",
+      "tags": ["hrv", "rmssd", "recovery", "readiness", "variability", "resting heart rate", "nervous system"],
+      "answer": "HRV is the variation in time between heartbeats. Higher generally indicates a more recovered, parasympathetically dominant state. RMSSD is the measure most used for day-to-day readiness.\n\nAbsolute values are close to meaningless between people — a healthy 25-year-old might sit at 90 ms and a healthy 50-year-old at 30 ms. Only your own deviation from your own baseline tells you anything, which is why Krysaril needs several readings before it scores readiness.\n\nMeasure at the same time each day, ideally on waking, before caffeine.",
+      "protocol": ["Same time daily, on waking", "At least 3 readings to establish a baseline", "Judge the 7-day trend, not one morning"]
+    },
+    {
+      "id": "low-readiness",
+      "topic": "What to do on a low readiness day",
+      "tags": ["low readiness", "tired", "fatigue", "deload", "overtraining", "rest day", "recovery"],
+      "answer": "One low morning is noise. Two or three in a row is a signal.\n\nThe usual causes in order of likelihood: short sleep, alcohol, a hard session in the last 24 hours, illness coming on, or under-eating. Training hard through a genuinely low stretch reliably makes the next week worse.\n\nKeep the session, drop the intensity: same movements, roughly two-thirds the working sets, nothing near failure.",
+      "protocol": ["Cut working sets by about a third", "Keep the movement patterns", "Add a full rest day", "Prioritise sleep over the session"]
+    },
+    {
+      "id": "waist-height",
+      "topic": "Waist-to-height ratio",
+      "tags": ["waist", "waist to height", "whtr", "body composition", "belly", "visceral", "measurement"],
+      "answer": "Waist-to-height is the single best-evidenced tape measurement for health risk — better than BMI, because it distinguishes where mass sits. The common guidance is to keep your waist under half your height.\n\nIt beats scale weight for tracking because it responds to the thing that actually matters, and it does not punish you for gaining muscle.",
+      "protocol": ["Measure at the navel, at the end of a normal exhale", "Same time of day, same conditions", "Track fortnightly, not daily"]
+    },
+    {
+      "id": "body-fat-methods",
+      "topic": "Measuring body fat",
+      "tags": ["body fat", "bodyfat", "dexa", "calipers", "navy", "bioimpedance", "scale", "composition"],
+      "answer": "In rough order of accuracy: DEXA, then hydrostatic weighing, then calipers in skilled hands, then the US Navy circumference formula, then consumer bioimpedance scales.\n\nNo camera can measure body fat. Anything claiming to read it from a photo is inferring shape and dressing the guess up as a measurement. Krysaril deliberately will not do that — it measures your silhouette, which is honest and repeatable, and uses the Navy formula only when you give it real tape measurements.\n\nFor tracking change, method consistency matters more than method accuracy. A slightly wrong number measured the same way every time is more useful than an accurate number measured differently each time.",
+      "protocol": ["Pick one method and stay with it", "Same conditions each time", "Compare monthly, not weekly"]
+    },
+    {
+      "id": "protein",
+      "topic": "Protein intake",
+      "tags": ["protein", "nutrition", "muscle", "diet", "grams", "eating"],
+      "answer": "For people training regularly, roughly 1.6 g per kg of body weight per day covers most of the benefit for muscle retention and growth; going much beyond about 2.2 g/kg adds little. In a calorie deficit the higher end helps preserve muscle.\n\nSpreading it across three or four meals works slightly better than one large serving. Practically: a palm-sized portion of a protein source at each meal gets most people there without weighing anything.",
+      "protocol": ["≈1.6 g/kg/day as a working target", "Protein at every meal", "Higher end while dieting"]
+    },
+    {
+      "id": "sleep",
+      "topic": "Sleep and training",
+      "tags": ["sleep", "rest", "recovery", "insomnia", "tired", "bedtime"],
+      "answer": "Sleep is the highest-leverage recovery variable and the one most often traded away. Under about six hours reliably reduces strength output, raises perceived effort, blunts glucose control within days and lowers testosterone in men within a week.\n\nConsistency of wake time matters more than bedtime for stabilising the rhythm. Daylight early, caffeine cut-off eight hours before bed, and no hard training within three hours of sleep are the three changes with the best return.",
+      "protocol": ["Fixed wake time, seven days a week", "Daylight within an hour of waking", "Caffeine cut-off 8 hours before bed"]
+    },
+    {
+      "id": "skin-routine",
+      "topic": "A simple skin routine",
+      "tags": ["skin", "skincare", "routine", "spf", "moisturiser", "cleanser", "acne", "glow"],
+      "answer": "The evidence-backed core is short: a gentle cleanser, a moisturiser, and broad-spectrum SPF 30+ every morning. Sunscreen does more for long-term tone, texture and firmness than any serum.\n\nAdd at most one active at a time and give it twelve weeks before judging it. Most irritation people blame on a product comes from using three actives at once.\n\nSkin fluctuates with sleep, stress, cycle and season, so compare scans a fortnight apart rather than day to day.",
+      "protocol": ["Cleanse, moisturise, SPF 30+ every morning", "One new active at a time", "Twelve weeks before judging anything"]
+    },
+    {
+      "id": "skin-redness",
+      "topic": "Redness and irritation",
+      "tags": ["redness", "irritated", "sensitive", "rosacea", "flushing", "barrier"],
+      "answer": "Visible redness usually means a disrupted skin barrier or a trigger the skin is reacting to. The reflex to treat it harder is almost always wrong.\n\nPause every acid, retinoid and scrub for a week. Lukewarm water, a creamy cleanser, a plain barrier moisturiser. Most transient irritation settles inside seven days on that alone.\n\nRedness that persists for weeks, comes with visible vessels, pustules or burning, belongs with a dermatologist — that pattern needs a diagnosis, not a routine change.",
+      "protocol": ["Pause all actives for 7 days", "Creamy cleanser, barrier moisturiser only", "See a dermatologist if it persists beyond a few weeks"]
+    },
+    {
+      "id": "vbt",
+      "topic": "Velocity-based training",
+      "tags": ["velocity", "vbt", "bar speed", "power", "explosive", "speed"],
+      "answer": "Bar velocity at a given load tells you what your nervous system has available today, which changes far more than your one-rep max does. Typical zones: above 1.0 m/s is speed work, 0.75–1.0 power, 0.5–0.75 strength-speed, below 0.5 maximal strength.\n\nThe practical use is autoregulation — stop the set when velocity drops more than about 20% from the best rep, and you get most of the adaptation with much less fatigue.\n\nPhone-camera velocity is a good relative measure, not a calibrated one. Compare it to your own previous sessions, never to someone else's numbers.",
+      "protocol": ["Record the first rep as the reference", "End the set at a 20% velocity drop", "Compare only to your own history"]
+    },
+    {
+      "id": "jump-testing",
+      "topic": "Jump testing",
+      "tags": ["jump", "cmj", "vertical", "countermovement", "power", "explosive", "flight time"],
+      "answer": "The countermovement jump is the most useful single field test of lower-body power and of fatigue. Height is derived from flight time: h = g·t²/8.\n\nA drop of more than about 10% from your own rolling average is a meaningful fatigue signal, and it usually appears before you consciously feel flat.\n\nTest at the same point in the session — ideally after the warm-up, before the work — and take the best of three.",
+      "protocol": ["Best of 3, full recovery between", "Same point in every session", "Watch for a >10% drop from your average"]
+    },
+    {
+      "id": "cadence",
+      "topic": "Running cadence",
+      "tags": ["cadence", "running", "steps", "spm", "stride", "overstriding", "gait"],
+      "answer": "Most recreational runners sit somewhere between 160 and 180 steps per minute. The often-quoted 180 comes from observing elites at race pace and does not transfer cleanly to everyone.\n\nCadence matters mainly because raising it shortens the stride, which reduces overstriding and the braking force through the knee. Increasing your own cadence by about 5–10% is the usual prescription for runners with knee pain — chasing an absolute number is not.",
+      "protocol": ["Find your current cadence at easy pace", "Raise it 5% and hold for 2 weeks", "Reassess before raising it again"]
+    },
+    {
+      "id": "labs-interpretation",
+      "topic": "Reading your blood work",
+      "tags": ["blood", "bloods", "labs", "test", "results", "reference range", "panel"],
+      "answer": "A reference range is where about 95% of a healthy population falls — which means one healthy person in twenty sits outside one, and a panel of twenty markers will usually show one flag by chance alone.\n\nSo a single out-of-range value on its own means very little. What matters is the pattern across related markers, the trend across repeated tests, and your symptoms. That combination is what a clinician is trained to read and what an app cannot substitute for.\n\nKrysaril flags what is outside range and offers lifestyle context where lifestyle genuinely moves the marker. It does not interpret your panel, and where a value needs clinical input it says so and stops.",
+      "protocol": ["Same conditions each retest — fasted, same time of day", "Most markers need 8–12 weeks to move", "Take the report to your appointment"]
+    },
+    {
+      "id": "triglycerides-fast",
+      "topic": "Markers that move quickly",
+      "tags": ["triglycerides", "fast", "quickly", "improve", "change", "how long"],
+      "answer": "Different markers move on very different timescales, which is worth knowing before you retest.\n\nFast, in weeks: triglycerides, fasting glucose, liver enzymes such as ALT, and CRP. These respond to alcohol, sleep and recent diet quickly enough that a bad week shows up.\n\nSlow, in months: HbA1c (about three months by definition), LDL, HDL, ferritin, vitamin D.\n\nRetesting a slow marker after four weeks mostly measures noise.",
+      "protocol": ["Fast markers: retest at 4–6 weeks", "Slow markers: retest at 12 weeks", "Same conditions both times"]
+    },
+    {
+      "id": "measurement-consistency",
+      "topic": "Getting comparable scans",
+      "tags": ["scan", "consistent", "accurate", "compare", "lighting", "repeat", "how to"],
+      "answer": "Everything Krysaril measures is a relative measure. That makes consistency the whole game.\n\nSame time of day, same lighting, same distance from the camera, same clothing, same footwear or bare feet. Morning before eating is the most repeatable window for body scans; posture is best assessed at the same point in the day since it drifts as you tire.\n\nA change of a few percent between two scans taken differently tells you nothing. The same few percent between two scans taken identically is real.",
+      "protocol": ["Mark where you stand and where the phone goes", "Same time of day", "Same clothing and lighting"]
+    },
+    {
+      "id": "training-frequency",
+      "topic": "How often to train",
+      "tags": ["frequency", "how often", "days per week", "schedule", "split", "programme"],
+      "answer": "For general strength and health, two to three full-body sessions a week gets the large majority of the available benefit. A fourth day adds a little; a fifth adds very little for most people and raises the chance of missing sessions entirely.\n\nEach muscle group trained twice a week beats once, at matched total volume. Beyond that, consistency over months matters far more than the split you choose.\n\nAdd 150 minutes a week of easy aerobic work — that has its own independent effect on health that lifting does not replace.",
+      "protocol": ["2–3 full-body strength sessions", "Each pattern twice a week", "150 min/week easy aerobic on top"]
+    },
+    {
+      "id": "progressive-overload",
+      "topic": "Progressing safely",
+      "tags": ["progress", "overload", "heavier", "add weight", "plateau", "stuck"],
+      "answer": "Change one variable at a time — load, reps, sets or tempo — and change it slowly. Roughly 2.5–5% more load when you can complete every prescribed rep with two in reserve is a sustainable rate.\n\nWhen you stall, the answer is almost never more weight. It is usually more sleep, more food, or a week at two-thirds volume to let fatigue clear.\n\nWhile you are rebuilding a movement pattern, leave two reps in reserve. Technique degrades near failure, and rehearsing a bad pattern under load is how it becomes permanent.",
+      "protocol": ["One variable at a time", "2.5–5% load increase when reps are clean", "Deload before you need it"]
+    },
+    {
+      "id": "app-privacy",
+      "topic": "Where your data goes",
+      "tags": ["privacy", "data", "stored", "cloud", "upload", "delete", "backup", "safe"],
+      "answer": "Everything stays in your browser's local database on this device. No account, no server, no upload.\n\nCamera frames are processed in memory and discarded. The body scan keeps only the silhouette outline — the photograph itself is never stored. Skin and posture scans keep a small thumbnail so you can see your history.\n\nThe only network requests the app makes are for the pose model, and even that is skipped when the model is self-hosted. Settings → Export backup moves your data; Settings → Delete everything removes it.",
+      "protocol": ["Settings → Export backup to move devices", "Settings → Delete everything to wipe"]
+    },
+    {
+      "id": "app-scans",
+      "topic": "What Krysaril measures",
+      "tags": ["what can you do", "features", "help", "capabilities", "scans", "measure"],
+      "answer": "Five assessments, all from the phone camera and all on-device:\n\nMovement — live form analysis with joint angles, rep counting and per-rep scoring across eight lifts plus running gait.\nPosture — a still measured against a plumb line: forward head, shoulder position, trunk lean, pelvic tilt, knee and shin, or levelness and knee tracking from the front.\nBody — silhouette widths at eight levels, waist-to-height and waist-to-hip, with a heatmap of where you changed.\nSpeed — round timer, strike count, hand speed and output.\nRecovery — heart rate and HRV from skin colour, scored against your own baseline.\nSkin — tone, redness, texture, hydration, pores and pigmentation.\n\nPlus blood-work tracking against reference ranges, and a program built from whatever you have measured.",
+      "protocol": []
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { KP } from '../js/pose/angles.js';
-import { analyzePosture, detectPostureView, rate, MEASURES, postureWork } from '../js/posture/analyze.js';
+import { analyzePosture, rate, MEASURES, postureWork } from '../js/posture/analyze.js';
 import {
   measureSilhouette, widthToCircumference, navyBodyFat, waistToHeightBand,
   compareScans, heatColor,
