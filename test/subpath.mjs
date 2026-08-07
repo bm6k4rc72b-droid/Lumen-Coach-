@@ -63,9 +63,20 @@ const iconRes = await fetch(new URL(manifest.icons[0].src, manifestHref).href);
 check('manifest icons resolve', iconRes.ok);
 
 // Routing across screens.
-await page.click('.tab[data-tab="/clients"]');
-await page.waitForSelector('.empty h3, .row', { timeout: 8000 });
-check('hash routing works without server rewrites', page.url().includes('#/clients'));
+await page.click('.tab[data-tab="/coach"]');
+await page.waitForSelector('.chip', { timeout: 15000 });
+check('hash routing works without server rewrites', page.url().includes('#/coach'));
+
+// The knowledge base resolves its path the same way the pose model does, so
+// it fails the same way if it is ever resolved against the module URL.
+const kb = await page.evaluate(async () => {
+  const { loadKnowledge } = await import('./js/assistant/knowledge.js');
+  const data = await loadKnowledge({ force: true });
+  return { source: data.source, entries: data.entries.length, version: data.version };
+});
+check('knowledge base fetched over the network under a subpath', kb.source === 'network',
+  `${kb.source}, v${kb.version}, ${kb.entries} entries`);
+check('knowledge base has its topics', kb.entries >= 15, String(kb.entries));
 
 // The pose model path is the one that broke when resolved against the module
 // URL instead of the document — this is the regression guard.
