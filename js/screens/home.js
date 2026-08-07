@@ -22,6 +22,10 @@ const ACTIONS = [
     glyph: 'M12 3.8a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2zM9.2 8.4h5.6l.7 4.8h-1.7L13.3 20h-1.5l-.6-4.6h-.4L10.2 20H8.7l.5-6.8H7.8z' },
   { id: 'speed', title: 'Speed', line: 'Output & rounds', route: '/speed',
     glyph: 'M13 3l-7 10h5l-1 8 7-10h-5z' },
+  { id: 'vitals', title: 'Recovery', line: 'Heart rate & HRV', route: '/vitals',
+    glyph: 'M3.5 12.5h3.2l1.9-4.4 2.7 8.2 2.1-5 1.4 2.6h5.7' },
+  { id: 'labs', title: 'Bloods', line: 'Labs & ranges', route: '/labs',
+    glyph: 'M9.4 3.6h5.2M10.6 3.6v6.1L6.9 17a2.2 2.2 0 0 0 1.9 3.3h6.4a2.2 2.2 0 0 0 1.9-3.3l-3.7-7.3V3.6M8.4 14h7.2' },
 ];
 
 export async function render() {

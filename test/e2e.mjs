@@ -75,11 +75,12 @@ await page.goto(BASE + '/index.html#/', { waitUntil: 'networkidle' });
 await page.waitForSelector('.hero', { timeout: 10000 });
 check('app shell renders', await page.locator('.hero h2').isVisible());
 check('tab bar present', (await page.locator('.tabbar .tab').count()) === 5);
-check('four capture entry points', (await page.locator('.section .card').count()) >= 4);
+check('coach tab replaced clients in the bar', (await page.locator('.tab[data-tab="/coach"]').count()) === 1);
+check('six capture entry points', (await page.locator('.section .card').count()) >= 6);
 await shot('01-dashboard');
 
 console.log('\n▸ Client creation (IndexedDB)');
-await page.click('.tab[data-tab="/clients"]');
+await page.goto(BASE + '/index.html#/clients', { waitUntil: 'networkidle' });
 await page.waitForSelector('.empty h3, .row');
 await page.click('button:has-text("Add")');
 await page.waitForSelector('.sheet');
@@ -406,10 +407,135 @@ await page.click('button:has-text("End round")');
 await page.waitForTimeout(400);
 check('round ends cleanly', !(await page.locator('button:has-text("Start round")').isDisabled()));
 
+console.log('\n▸ Recovery scan');
+await page.goto(BASE + '/index.html#/vitals', { waitUntil: 'networkidle' });
+await page.waitForSelector('.stage', { timeout: 15000 });
+await page.waitForFunction(() => document.querySelector('.perm')?.hidden, null, { timeout: 90000 }).catch(() => {});
+check('recovery camera opens', await page.locator('.perm').isHidden());
+const vitalsHud = (await page.locator('.rep-hud').innerText()).toLowerCase();
+check('bpm and hrv readouts present', /bpm/.test(vitalsHud) && /hrv/.test(vitalsHud),
+  vitalsHud.replace(/\n/g, ' '));
+check('trace canvas present', (await page.locator('.stage canvas').count()) >= 1);
+await shot('14-vitals');
+
+// The fake camera has no pulse in it, so drive the rPPG maths in-page instead.
+const pulse = await page.evaluate(async () => {
+  const { PulseBuffer, analysePulse, readinessScore } = await import('./js/vitals/rppg.js');
+  const make = (bpm, noise, seed = 99) => {
+    const buf = new PulseBuffer(30);
+    let s = seed >>> 0;
+    const rand = () => {
+      s = (s + 0x6d2b79f5) >>> 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return (((t ^ (t >>> 14)) >>> 0) / 4294967296) * 2 - 1;
+    };
+    for (let i = 0; i < 20 * 30; i++) {
+      const ph = (2 * Math.PI * (bpm / 60) * i) / 30;
+      const beat = bpm ? (Math.sin(ph) + 0.3 * Math.sin(2 * ph)) * 2 : 0;
+      const g = 128 + beat + rand() * noise;
+      buf.push((i / 30) * 1000, { r: 180, g, b: 110 });
+    }
+    return analysePulse(buf);
+  };
+  const clean = make(68, 0);
+  // Whether one noise record slips past a threshold is luck, so sweep seeds.
+  let pulselessAccepted = 0;
+  for (let s = 1; s <= 25; s++) if (make(0, 10, s * 7919).ready) pulselessAccepted++;
+  const history = [{ bpm: 60, rmssd: 50 }, { bpm: 59, rmssd: 48 }, { bpm: 61, rmssd: 52 }];
+  return {
+    bpm: clean.bpm,
+    ready: clean.ready,
+    rmssd: clean.rmssd,
+    pulselessAccepted,
+    readiness: readinessScore({ bpm: clean.bpm, rmssd: clean.rmssd }, history).score,
+  };
+});
+check('heart rate recovered in-browser', pulse.ready && Math.abs(pulse.bpm - 68) <= 3, `${pulse.bpm} bpm`);
+check('hrv computed', pulse.rmssd !== null, `rmssd ${pulse.rmssd}`);
+check('pulseless recordings are all refused', pulse.pulselessAccepted === 0,
+  `${pulse.pulselessAccepted}/25 accepted`);
+check('readiness scores against a baseline', pulse.readiness >= 1 && pulse.readiness <= 100, String(pulse.readiness));
+
+console.log('\n▸ Blood work');
+await page.goto(BASE + '/index.html#/labs', { waitUntil: 'networkidle' });
+await page.waitForSelector('input[aria-label="HbA1c"]', { timeout: 10000 });
+check('every marker gets a field', (await page.locator('.section .card input.input').count()) >= 18);
+check('assess is disabled until something is entered',
+  await page.locator('button:has-text("Assess panel")').isDisabled());
+// One value far outside range, one merely raised that lifestyle genuinely moves.
+await page.fill('input[aria-label="HbA1c"]', '12');
+await page.fill('input[aria-label="Triglycerides"]', '2.4');
+await page.fill('input[aria-label="Fasting glucose"]', '4.9');
+await shot('15-labs-entry');
+await page.click('button:has-text("Assess panel")');
+await page.waitForURL(/#\/labsreport\//, { timeout: 8000 });
+await page.waitForSelector('.metric', { timeout: 8000 });
+
+const report = await page.evaluate(() => document.body.innerText);
+check('urgent value raises the doctor banner', /contact a doctor/i.test(report));
+check('report lists the referral section', /for your doctor/i.test(report));
+check('lifestyle levers still offered for triglycerides', /triglycerides/i.test(report)
+  && /lifestyle levers/i.test(report));
+const tipsSection = await page.locator('.card:below(:text("Lifestyle levers"))').first().innerText();
+check('no lifestyle tips attached to the urgent marker', !/hba1c/i.test(tipsSection), tipsSection.slice(0, 60));
+check('three markers rendered', (await page.locator('.metric').count()) === 3);
+await shot('16-labs-report');
+
+console.log('\n▸ Coach and program');
+await page.evaluate(async () => {
+  // Seed a posture finding so the program has real movement work to plan,
+  // not only the blood-work path.
+  const { savePosture, getSettings } = await import('./js/store.js');
+  const { activeClientId } = await getSettings();
+  await savePosture({
+    clientId: activeClientId ?? null,
+    view: 'side',
+    overall: 61,
+    measures: [
+      { id: 'forwardHead', label: 'Forward head', value: 42, level: 'bad', ideal: [48, 90] },
+      { id: 'shoulderProtraction', label: 'Shoulder protraction', value: 31, level: 'warn', ideal: [0, 18] },
+    ],
+  });
+});
+
+await page.goto(BASE + '/index.html#/coach', { waitUntil: 'networkidle' });
+await page.waitForSelector('.chip', { timeout: 10000 });
+check('coach greets with suggested topics', (await page.locator('.wrap .chip').count()) >= 6);
+check('assessments feeding the coach are listed', (await page.locator('.list .row').count()) === 5);
+check('bloods show as in use', (await page.locator('.row:has-text("Bloods") .pill.gold').count()) === 1);
+await shot('17-coach');
+
+await page.fill('input[aria-label="Ask the coach a question"]', 'my knees cave in when I squat');
+await page.click('button[aria-label="Send"]');
+await page.waitForFunction(
+  () => !/^…$/.test(document.querySelectorAll('[style*="border-radius"]')[0]?.textContent || ''),
+  null, { timeout: 8000 },
+).catch(() => {});
+await page.waitForTimeout(600);
+const chat = await page.evaluate(() => document.body.innerText);
+check('coach answers from the knowledge base', /knowledge base v/i.test(chat), chat.slice(-160).replace(/\n/g, ' '));
+check('the answer is the knee-tracking topic', /valgus|knee/i.test(chat));
+await shot('18-coach-answer');
+
+await page.click('button:has-text("Build my program")');
+await page.waitForURL(/#\/program\//, { timeout: 8000 });
+await page.waitForSelector('.hero', { timeout: 8000 });
+const program = await page.evaluate(() => document.body.innerText);
+check('program page renders a week', /a typical week/i.test(program));
+check('program explains why', /why this program/i.test(program));
+check('long arc has three phases', (await page.locator('.overline:has-text("Weeks")').count()) === 3);
+check('urgent bloods appear as a clinical flag', /clear these with a clinician first/i.test(program));
+check('urgent bloods are not turned into training work',
+  !/hba1c/i.test(program.split(/the work/i)[1] || ''));
+check('re-measure schedule present', /re-measure/i.test(program));
+await shot('19-program');
+
 console.log('\n▸ History, settings, PWA');
 await page.goto(BASE + '/index.html#/history', { waitUntil: 'networkidle' });
 await page.waitForSelector('.chip');
-check('history has a tab per record type', (await page.locator('.chip').count()) === 5);
+check('history has a tab per record type', (await page.locator('.chip').count()) === 8);
 await page.click('.chip:has-text("Skin")');
 await page.waitForTimeout(200);
 check('skin history lists the saved scan', (await page.locator('.row').count()) >= 1);
